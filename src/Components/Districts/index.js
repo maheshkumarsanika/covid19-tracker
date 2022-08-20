@@ -16,7 +16,6 @@ const Districts = ({ state, districts }) => {
   }, [districts]);
 
   const handleSortBy = (sortBy) => {
-    console.log(data);
     const d = flattenDistrictsData(districts);
     const [key, direction] = sortBy.split("__");
 

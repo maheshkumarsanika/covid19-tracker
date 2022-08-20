@@ -4,7 +4,7 @@ import StateStats from "./Components/States";
 import { statesDataAPI, districtWiseDataAPI } from "./utils/apis";
 
 const App = () => {
-  const [statesData, setStatesData] = useState({});
+  const [statesData, setStatesData] = useState([]);
   const [districtWiseData, setDistrictWiseData] = useState({});
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const App = () => {
       <div className="columns p-6 mt-6">
         <div className="column is-5">Map Component</div>
         <div className="column is-7">
-          <StateStats statesData={statesData} districtWiseData={districtWiseData} />
+          <StateStats states={statesData} districts={districtWiseData} />
         </div>
       </div>
     </>
