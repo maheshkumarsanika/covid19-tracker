@@ -1,8 +1,8 @@
 const Header = ({title = "App"}) => {
   return (
-    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item has-text-weight-bold" href="#app">
+    <nav className="navbar is-primary" role="navigation" aria-label="main navigation">
+      <div className="navbar-brand">
+        <a className="navbar-item has-text-weight-bold" href="#app">
           {title}
         </a>
 
