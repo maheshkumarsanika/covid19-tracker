@@ -5,7 +5,7 @@ const StateStats = ({ statesData, districtWiseData }) => {
   const [selectedState, setSelelctedState] = useState(null);
 
   const districts = districtWiseData[selectedState];
-  console.log(districts);
+
   return (
     <div>
       {Object.entries(statesData).map(([state, stats]) => {
