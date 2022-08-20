@@ -9,3 +9,7 @@ export const transformStatesData = (data) => {
     
     return stateWiseObject;
 }
+
+export const transformDistrictData = (data) => {
+    return data?.data ||  {};
+}

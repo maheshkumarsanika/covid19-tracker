@@ -1,7 +1,14 @@
-const StateStats = ({ data }) => {
+import { useState } from "react";
+import Districts from "../Districts";
+
+const StateStats = ({ statesData, districtWiseData }) => {
+  const [selectedState, setSelelctedState] = useState(null);
+
+  const districts = districtWiseData[selectedState];
+  console.log(districts);
   return (
     <div>
-      {Object.entries(data).map(([state, stats]) => {
+      {Object.entries(statesData).map(([state, stats]) => {
         return (
           <div key={state} className="box">
             <div className="title is-4 has-text-info">{state}</div>
@@ -55,11 +62,20 @@ const StateStats = ({ data }) => {
                 </small>
               </div>
               <div className="column">
-                <button className="is-rounded  button is-primary is-small is-pulled-right">
-                  View District wise Stats
-                </button>
+                {state !== "Total" && (
+                  <button
+                    type="button"
+                    onClick={(e) => setSelelctedState(selectedState === state ? null : state)}
+                    className="is-rounded  button is-primary is-small is-pulled-right"
+                  >
+                    {selectedState === state? 'Hide': 'View'}  District wise Stats
+                  </button>
+                )}
               </div>
             </div>
+            {selectedState && selectedState === state && (
+              <Districts state={selectedState} districts={districts} />
+            )}
           </div>
         );
       })}

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import Header from "./Components/Header";
 import StateStats from "./Components/States";
-import { statesDataAPI } from "./utils/apis";
+import { statesDataAPI, districtWiseDataAPI } from "./utils/apis";
 
 const App = () => {
   const [statesData, setStatesData] = useState({});
-  const [districtWiseData, setDistrictWiseData] = useState(null);
+  const [districtWiseData, setDistrictWiseData] = useState({});
 
   useEffect(() => {
     (async () => {
-      const data = await statesDataAPI();
-      setStatesData(data)
+      const statesData = await statesDataAPI();
+      setStatesData(statesData);
+      const districtsData = await districtWiseDataAPI();
+      setDistrictWiseData(districtsData);
     })();
   }, []);
 
@@ -20,7 +22,7 @@ const App = () => {
       <div className="columns p-6 mt-6">
         <div className="column is-5">Map Component</div>
         <div className="column is-7">
-          <StateStats data={statesData} />
+          <StateStats statesData={statesData} districtWiseData={districtWiseData} />
         </div>
       </div>
     </>

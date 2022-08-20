@@ -1,5 +1,5 @@
 import axios from "axios";
-import { transformStatesData } from "./transformers";
+import { transformDistrictData, transformStatesData } from "./transformers";
 
 const API_URI = "https://data.covid19india.org";
 const STATES_API = '/data.json';
@@ -20,9 +20,8 @@ export const districtWiseDataAPI = async () => {
     try {
         const api = `${API_URI}${DISTRICT_API}`;
         const data = await axios.get(api);
-        console.log(data)
 
-        return data
+        return transformDistrictData(data)
     } catch(e) {
         throw Error(`District wise Data API Failed: ${e.message}`)
     }
