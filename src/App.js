@@ -24,7 +24,7 @@ const App = () => {
         <div style={{ position: 'fixed !important'}} className="column is-6">
           <MapComponent states={statesData} />
         </div>
-        <div className="column is-6">
+        <div className="column is-6 stats-container">
           <StateStats states={statesData} districts={districtWiseData} />
         </div>
       </div>

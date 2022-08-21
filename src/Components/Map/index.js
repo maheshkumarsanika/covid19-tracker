@@ -107,7 +107,7 @@ const MapComponent = ({ states }) => {
   };
 
   return (
-    <div className="full-width-height container">
+    <div className="map-container container">
       <ReactTooltip>{tooltipContent}</ReactTooltip>
       <ComposableMap
         projectionConfig={PROJECTION_CONFIG}

@@ -28,7 +28,7 @@ code {
   margin-top: 16px;
 }
 
-.full-width-height {
+.map-container {
   height: 80vh;
   position: fixed;
   width: 45vw;
@@ -36,4 +36,16 @@ code {
 
 .map-container {
   height: 80vh;
+}
+
+@media only screen and (max-width: 600px) {
+  .map-container {
+    height: auto;
+    position: inherit;
+    width: 100vw;
+  }
+
+  .stats-container {
+    width: 100vw;
+  }
 }
