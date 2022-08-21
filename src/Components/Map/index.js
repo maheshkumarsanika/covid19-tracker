@@ -78,26 +78,27 @@ const MapComponent = ({ states }) => {
         .map((s) => ({
           id: s.statecode,
           state: s.state,
-          value: Number(s.active),
+          ...s,
         }))
     );
   }, [states]);
-
 
   const gradientData = {
     fromColor: COLOR_RANGE[0],
     toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
     min: 0,
-    max: data.reduce((max, item) => (item.value > max ? item.value : max), 0),
+    max: data.reduce((max, item) => (item.active > max ? item.active : max), 0),
   };
 
   const colorScale = scaleQuantile()
-    .domain(data.map((d) => d.value))
+    .domain(data.map((d) => d.active))
     .range(COLOR_RANGE);
 
   const onMouseEnter = (geo, current = { value: "NA" }) => {
     return () => {
-      setTooltipContent(`${geo.properties.name}: ${current.value}`);
+      setTooltipContent(
+        `${geo.properties.name} Cases: Active - ${current.active} | Confirmed - ${current.confirmed} | Deaths - ${current.deaths}`
+      );
     };
   };
 
@@ -123,7 +124,7 @@ const MapComponent = ({ states }) => {
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
-                  fill={current ? colorScale(current.value) : DEFAULT_COLOR}
+                  fill={current ? colorScale(current.active) : DEFAULT_COLOR}
                   style={geographyStyle}
                   onMouseEnter={onMouseEnter(geo, current)}
                   onMouseLeave={onMouseLeave}
