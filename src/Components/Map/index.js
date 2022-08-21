@@ -1,30 +1,141 @@
-import React, { useRef, useEffect } from "react";
-import mapboxgl from "mapbox-gl";
+import React, { useEffect, useState } from "react";
+import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import { scaleQuantile } from "d3-scale";
+import ReactTooltip from "react-tooltip";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
+/**
+ * Courtesy: https://rawgit.com/Anujarya300/bubble_maps/master/data/geography-data/india.topo.json
+ * Looking topojson for other countries/world?
+ * Visit: https://github.com/markmarkoh/datamaps
+ */
+const INDIA_TOPO_JSON = require("./india.topo.json");
 
-const MapComponent = () => {
-  const mapContainerRef = useRef(null);
+const PROJECTION_CONFIG = {
+  scale: 1000,
+  center: [78.9629, 22.5937], // always in [East Latitude, North Longitude]
+};
 
-  // Initialize map when component mounts
+// Red Variants
+const COLOR_RANGE = [
+  "#ffedea",
+  "#ffcec5",
+  "#ffad9f",
+  "#ff8a75",
+  "#ff5533",
+  "#e2492d",
+  "#be3d26",
+  "#9a311f",
+  "#782618",
+];
+
+const DEFAULT_COLOR = "#EEE";
+
+const geographyStyle = {
+  default: {
+    outline: "none",
+  },
+  hover: {
+    fill: "#ccc",
+    transition: "all 250ms",
+    outline: "none",
+  },
+  pressed: {
+    outline: "none",
+  },
+};
+
+const LinearGradient = (props) => {
+  const { data } = props;
+  const boxStyle = {
+    width: 180,
+    margin: "auto",
+  };
+  const gradientStyle = {
+    backgroundImage: `linear-gradient(to right, ${data.fromColor} , ${data.toColor})`,
+    height: 20,
+  };
+
+  return (
+    <div>
+      <div style={boxStyle} className="display-flex">
+        <span>{data.min}</span>
+        <span className="fill"></span>
+        <span>{data.max}</span>
+      </div>
+      <div style={{ ...boxStyle, ...gradientStyle }} className="mt8"></div>
+    </div>
+  );
+};
+
+const MapComponent = ({ states }) => {
+  const [tooltipContent, setTooltipContent] = useState("");
+  const [data, setData] = useState([]);
+
   useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: [78.9629, 20.5937],
-      zoom: 4,
-    });
+    setData(
+      states
+        .filter((s) => s.state !== "Total")
+        .map((s) => ({
+          id: s.statecode,
+          state: s.state,
+          value: Number(s.active),
+        }))
+    );
+  }, [states]);
 
 
-    // Add navigation control (the +/- zoom buttons)
-    map.addControl(new mapboxgl.NavigationControl(), "top-right");
-    map.scrollZoom.disable();
-    // Clean up on unmount
-    return () => map.remove();
-  }, []);
+  const gradientData = {
+    fromColor: COLOR_RANGE[0],
+    toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
+    min: 0,
+    max: data.reduce((max, item) => (item.value > max ? item.value : max), 0),
+  };
 
-  return <div className="map-container" ref={mapContainerRef} />;
+  const colorScale = scaleQuantile()
+    .domain(data.map((d) => d.value))
+    .range(COLOR_RANGE);
+
+  const onMouseEnter = (geo, current = { value: "NA" }) => {
+    return () => {
+      setTooltipContent(`${geo.properties.name}: ${current.value}`);
+    };
+  };
+
+  const onMouseLeave = () => {
+    setTooltipContent("");
+  };
+
+  return (
+    <div className="full-width-height container">
+      <ReactTooltip>{tooltipContent}</ReactTooltip>
+      <ComposableMap
+        projectionConfig={PROJECTION_CONFIG}
+        projection="geoMercator"
+        width={700}
+        height={600}
+        data-tip=""
+      >
+        <Geographies geography={INDIA_TOPO_JSON}>
+          {({ geographies }) =>
+            geographies.map((geo) => {
+              const current = data.find((s) => s.id === geo.id);
+              return (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  fill={current ? colorScale(current.value) : DEFAULT_COLOR}
+                  style={geographyStyle}
+                  onMouseEnter={onMouseEnter(geo, current)}
+                  onMouseLeave={onMouseLeave}
+                />
+              );
+            })
+          }
+        </Geographies>
+      </ComposableMap>
+      <LinearGradient data={gradientData} />
+    </div>
+  );
 };
 
 export default MapComponent;

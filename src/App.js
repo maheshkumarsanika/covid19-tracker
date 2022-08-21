@@ -21,10 +21,10 @@ const App = () => {
     <>
       <Header title="COVID-19 Tracker" />
       <div className="columns p-6 mt-6">
-        <div className="column is-5">
-          <MapComponent />
+        <div style={{ position: 'fixed !important'}} className="column is-6">
+          <MapComponent states={statesData} />
         </div>
-        <div className="column is-7">
+        <div className="column is-6">
           <StateStats states={statesData} districts={districtWiseData} />
         </div>
       </div>
