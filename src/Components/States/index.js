@@ -31,13 +31,16 @@ const StateStats = ({ states, districts }) => {
   };
 
   const handleFilterByText = (value) => {
-    setStatesData(states.filter((a) => a?.state?.toLowerCase().includes(value?.toLowerCase())));
+    setStatesData(
+      states.filter((a) =>
+        a?.state?.toLowerCase().includes(value?.toLowerCase())
+      )
+    );
   };
-  
+
   const total = states.find((s) => s.state === "Total");
   const onlyStates = statesData.filter((s) => s.state !== "Total");
 
-  
   return (
     <div>
       <div key={total?.state} className="box has-background-dark">
@@ -91,8 +94,6 @@ const StateStats = ({ states, districts }) => {
               ).toLocaleString()} Recovered`}
             </small>
           </div>
-          <div className="column">
-          </div>
         </div>
       </div>
 
@@ -128,10 +129,24 @@ const StateStats = ({ states, districts }) => {
         onSortBy={handleSortBy}
         onFilter={handleFilterByText}
       />
+
       {onlyStates.map((stats) => {
+        const subject = `Covid19 Stats for ${stats?.state}`;
+        const body = `Active Cases: ${Number(
+          stats?.active
+        ).toLocaleString()} | Confirmed Cases: ${Number(
+          stats?.confirmed
+        ).toLocaleString()} | Deaths: ${Number(stats?.deaths).toLocaleString()}`;
+        const href = `mailto:?subject=${subject}&body=${body}`;
+
         return (
           <div key={stats?.state} className="box">
-            <div className="title is-4 has-text-info">{stats?.state}</div>
+            <div className="title is-4 has-text-info">
+              {stats?.state}
+              <span className="is-pulled-right">
+                <a href={href}>&#9993;</a>
+              </span>
+            </div>
             <hr />
             <nav className="level is-mobile">
               <div className="level-item has-text-centered">

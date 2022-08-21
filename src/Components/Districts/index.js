@@ -36,7 +36,9 @@ const Districts = ({ state, districts }) => {
 
   const handleFilterByText = (value) => {
     const d = flattenDistrictsData(districts);
-    setData(d.filter((a) => a?.district?.toLowerCase().includes(value?.toLowerCase())));
+    setData(
+      d.filter((a) => a?.district?.toLowerCase().includes(value?.toLowerCase()))
+    );
   };
 
   return (
@@ -73,6 +75,7 @@ const Districts = ({ state, districts }) => {
         onSortBy={handleSortBy}
         onFilter={handleFilterByText}
       />
+
       <table className="table is-striped is-fullwidth">
         <tbody>
           <tr className="is-selected">
@@ -82,8 +85,19 @@ const Districts = ({ state, districts }) => {
             <td>Deaths</td>
             <td>Recovered</td>
             <td>Delta</td>
+            <td></td>
           </tr>
           {data.map((stats) => {
+            const subject = `Covid19 Stats for ${stats?.district}`;
+            const body = `Active Cases: ${Number(
+              stats?.active
+            ).toLocaleString()} | Confirmed Cases: ${Number(
+              stats?.confirmed
+            ).toLocaleString()} | Deaths: ${Number(
+              stats?.deceased
+            ).toLocaleString()}`;
+            const href = `mailto:?subject=${subject}&body=${body}`;
+
             return (
               <tr key={stats.district}>
                 <td>{stats.district}</td>
@@ -105,6 +119,11 @@ const Districts = ({ state, districts }) => {
                       {Number(stats?.delta?.recovered).toLocaleString()}
                     </div>
                   </small>
+                </td>
+                <td>
+                  <span className="is-pulled-right">
+                    <a href={href}>&#9993;</a>
+                  </span>
                 </td>
               </tr>
             );
