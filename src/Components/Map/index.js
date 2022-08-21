@@ -87,7 +87,7 @@ const MapComponent = ({ states }) => {
     fromColor: COLOR_RANGE[0],
     toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
     min: 0,
-    max: data.reduce((max, item) => (item.active > max ? item.active : max), 0),
+    max: data.reduce((max, item) => (Number(item.active) > max ? Number(item.active) : max), 0),
   };
 
   const colorScale = scaleQuantile()
